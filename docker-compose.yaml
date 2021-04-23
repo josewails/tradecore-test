@@ -1,0 +1,29 @@
+version: "3"
+
+services:
+  redis:
+    container_name: trade-core-redis
+    image: "redis:alpine"
+    restart: always
+
+  web:
+    container_name: trade-core-web
+    build:
+      context: .
+      dockerfile: Dockerfile
+
+    ports:
+      - "8000:8000"
+
+    environment:
+      CELERY_TIMEZONE: ${CELERY_TIMEZONE}
+      GEOLOCATION_API_KEY: ${GEOLOCATION_API_KEY}
+      HOLIDAY_API_KEY: ${HOLIDAY_API_KEY}
+      REDIS_URL: ${REDIS_URL}
+
+    volumes:
+      - .:/app
+
+    depends_on:
+      - redis
+

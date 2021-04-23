@@ -1,9 +1,8 @@
 from django.db import models
-from django.contrib.auth.models import AbstractUser
-
-from django.db import models
 from django.contrib.auth.base_user import BaseUserManager
 from django.contrib.auth.models import AbstractUser
+
+from .tasks import update_user_geolocation
 
 
 class CustomUserManager(BaseUserManager):
@@ -43,7 +42,9 @@ class CustomUserManager(BaseUserManager):
 class User(AbstractUser):
     username = None
     email = models.EmailField("email_address", unique=True)
-
+    geolocation = models.TextField(blank=True, null=True)
+    signup_holiday = models.TextField(blank=True, null=True)
+    
     USERNAME_FIELD = "email"
     REQUIRED_FIELDS = []
 
@@ -53,7 +54,7 @@ class User(AbstractUser):
         return self.email
 
     def save(self, **kwargs):
-        if not self.username:
-            self.username = self.email
+        if not self.geolocation or not self.self.signup_holiday:
+            update_user_geolocation.delay(self.email)
 
         super().save(**kwargs)
