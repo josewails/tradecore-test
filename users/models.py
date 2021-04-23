@@ -44,7 +44,7 @@ class User(AbstractUser):
     email = models.EmailField("email_address", unique=True)
     geolocation = models.TextField(blank=True, null=True)
     signup_holiday = models.TextField(blank=True, null=True)
-    
+
     USERNAME_FIELD = "email"
     REQUIRED_FIELDS = []
 
@@ -52,9 +52,3 @@ class User(AbstractUser):
 
     def __str__(self):
         return self.email
-
-    def save(self, **kwargs):
-        if not self.geolocation or not self.self.signup_holiday:
-            update_user_geolocation.delay(self.email)
-
-        super().save(**kwargs)

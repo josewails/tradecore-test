@@ -5,7 +5,7 @@ from django.conf import settings
 class AbstractAPI:
 
     def __init__(self):
-        self.geolocation_api_key = settings.ABSTRACT_API_KEY
+        self.geolocation_api_key = settings.GEOLOCATION_API_KEY
         self.holiday_api_key = settings.HOLIDAY_API_KEY
 
     def ip_geolocation(self):

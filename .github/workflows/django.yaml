@@ -42,5 +42,5 @@ jobs:
         env:
           CELERY_TIMEZONE: ${{secrets.CELERY_TIMEZONE}}
           GEOLOCATION_API_KEY: ${{secrets.GEOLOCATION_API_KEY}}
-          HOLIDAY_API_KEY: $${{secrets.HOLIDAY_API_KEY}}
+          HOLIDAY_API_KEY: ${{secrets.HOLIDAY_API_KEY}}
           REDIS_URL: ${{secrets.REDIS_URL}}
