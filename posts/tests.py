@@ -33,6 +33,14 @@ class TestPosts(APITestCase):
         res = view(request).render()
         return json.loads(res.content.decode("utf-8"))["access"]
 
+    def _like_post(self, post_id, action):
+        request = self.request_factory.post(f"/post/{post_id}/{action}", **self.request_kwargs)
+        view = PostViewSet.as_view({"post": "likes_update"})
+        res = view(request, pk=post_id, action=action).render()
+        json_res = json.loads(res.content.decode("utf-8"))
+
+        return res, json_res
+
     def test_can_create_post(self):
         data = dict(
             title=fake.sentence(),
@@ -82,3 +90,21 @@ class TestPosts(APITestCase):
         self.assertEqual(res.status_code, 200)
         post.refresh_from_db()
         self.assertNotEqual(post.title, initial_title)
+
+    def test_can_like_and_unlike_post(self):
+        post = self.posts[0]
+
+        # test an invalid like action won't work
+        res, _ = self._like_post(post.id, "no_action")
+        self.assertEqual(res.status_code, 400)
+
+        # test can like a post
+        res, json_res = self._like_post(post.id, "like")
+        self.assertEqual(res.status_code, 200)
+        self.assertIn("likes_count", json_res)
+        self.assertEqual(json_res["likes_count"], 1)
+
+        # test can unlike post
+        res, json_res = self._like_post(post.id, "unlike")
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(json_res["likes_count"], 0)
