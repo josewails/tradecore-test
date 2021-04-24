@@ -63,7 +63,6 @@ class TestUsers(APITestCase):
         self.assertEqual(res.status_code, 200)
         self.assertIn("access", json_res)
 
-    @override_settings(CELERY_ALWAYS_EAGER=True)
     def test_can_get_user_details(self):
         view = UserDetailView.as_view()
         url = reverse("user_detail", kwargs=dict(pk=self.user.id))
@@ -76,6 +75,7 @@ class TestUsers(APITestCase):
         self.assertIn("email", json_res)
         self.assertIn("geolocation", json_res)
 
+    @override_settings(CELERY_TASK_ALWAYS_EAGER=True)
     def test_user_can_sign_up(self):
         view = UserSignupView.as_view()
         url = reverse("user_signup")

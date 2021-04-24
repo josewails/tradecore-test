@@ -17,8 +17,6 @@ def update_user_geolocation(user_email):
     user = user_model.objects.filter(email=user_email).first()
     abstract_api = AbstractAPI()
 
-    print(user_email)
-
     if user:
         logger.info(f"Updating user with email ({user.email})")
         geolocation, status_code = abstract_api.ip_geolocation()
@@ -39,4 +37,6 @@ def update_user_geolocation(user_email):
         else:
             logger.info(f"Error getting geolocation data: {status_code}")
 
-        # user.save()
+        user.save()
+    else:
+        logger.info(f"Error getting user with email ({user_email})")

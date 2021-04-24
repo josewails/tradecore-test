@@ -5,6 +5,7 @@ from rest_framework_simplejwt.serializers import TokenObtainSerializer, Password
 from rest_framework_simplejwt.tokens import RefreshToken
 
 from .models import User
+from .tasks import update_user_geolocation
 
 
 class UserSignupSerializer(TokenObtainSerializer):
@@ -23,6 +24,7 @@ class UserSignupSerializer(TokenObtainSerializer):
         user = User(email=email)
         user.set_password(password)
         user.save()
+        update_user_geolocation(user.email)
 
         super().validate(dict(email=email, password=password))
         refresh = self.get_token(user)
