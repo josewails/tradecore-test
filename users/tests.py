@@ -7,7 +7,7 @@ from faker import Faker
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 
 from .factories import UserFactory
-from .views import UserDetailView
+from .views import UserDetailView, UserSignupView
 
 fake = Faker()
 
@@ -19,6 +19,9 @@ class TestUsers(APITestCase):
         self.email, self.password = fake.email(), fake.password()
         self.user = UserFactory(email=self.email, password=self.password)
         self.user_credentials = dict(email=self.email, password=self.password)
+        self.request_kwargs = {
+            "HTTP_AUTHORIZATION": f"Bearer {self._get_access_token()}"
+        }
 
     def _get_access_token(self):
         view = TokenObtainPairView.as_view()
@@ -62,10 +65,9 @@ class TestUsers(APITestCase):
 
     @override_settings(CELERY_ALWAYS_EAGER=True)
     def test_can_get_user_details(self):
-        http_authorization = f"Bearer {self._get_access_token()}"
         view = UserDetailView.as_view()
         url = reverse("user_detail", kwargs=dict(pk=self.user.id))
-        request = self.request_factory.get(url, HTTP_AUTHORIZATION=http_authorization)
+        request = self.request_factory.get(url, **self.request_kwargs)
         res = view(request, pk=self.user.id).render()
         json_res = json.loads(res.content.decode("utf-8"))
         self.assertEqual(res.status_code, 200)
@@ -73,3 +75,18 @@ class TestUsers(APITestCase):
         self.assertIn("id", json_res)
         self.assertIn("email", json_res)
         self.assertIn("geolocation", json_res)
+
+    def test_user_can_sign_up(self):
+        view = UserSignupView.as_view()
+        url = reverse("user_signup")
+        data = dict(
+            email=fake.email(),
+            password=fake.password()
+        )
+        request = self.request_factory.post(url, data=data)
+        res = view(request).render()
+        json_res = json.loads(res.content.decode("utf-8"))
+
+        self.assertEqual(res.status_code, 200)
+        self.assertIn("access", json_res)
+        self.assertIn("refresh", json_res)
