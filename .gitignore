@@ -131,3 +131,5 @@ dmypy.json
 # IDE auto generated
 .idea
 
+# misc
+web

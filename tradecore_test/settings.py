@@ -39,8 +39,7 @@ INSTALLED_APPS = [
     'django_extensions',
 
     'users',
-    'posts',
-    'web'
+    'posts'
 ]
 
 MIDDLEWARE = [
@@ -59,7 +58,7 @@ TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS': [
-            os.path.join(BASE_DIR, "posts", "templates")
+            os.path.join(BASE_DIR, "posts", "../web/templates")
         ],
         'APP_DIRS': True,
         'OPTIONS': {
