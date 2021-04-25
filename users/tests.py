@@ -65,7 +65,7 @@ class TestUsers(APITestCase):
 
     def test_can_get_user_details(self):
         view = UserDetailView.as_view()
-        url = reverse("user_detail", kwargs=dict(pk=self.user.id))
+        url = reverse("other_user_detail", kwargs=dict(pk=self.user.id))
         request = self.request_factory.get(url, **self.request_kwargs)
         res = view(request, pk=self.user.id).render()
         json_res = json.loads(res.content.decode("utf-8"))
@@ -74,6 +74,14 @@ class TestUsers(APITestCase):
         self.assertIn("id", json_res)
         self.assertIn("email", json_res)
         self.assertIn("geolocation", json_res)
+
+        # test can get own users details
+        url = reverse("user_detail")
+        request = self.request_factory.get(url, **self.request_kwargs)
+        res = view(request).render()
+        self.assertEqual(res.status_code, 200)
+        json_res = json.loads(res.content.decode("utf-8"))
+        self.assertEqual(json_res["id"], self.user.id)
 
     @override_settings(CELERY_TASK_ALWAYS_EAGER=True)
     def test_user_can_sign_up(self):

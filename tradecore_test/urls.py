@@ -21,10 +21,11 @@ from rest_framework.routers import DefaultRouter
 from posts.views import PostViewSet
 
 router = DefaultRouter()
-router.register("posts", PostViewSet)
+router.register("", PostViewSet)
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path("users/", include("users.urls")),
-    path("", include(router.urls))
+    path("posts/", include(router.urls)),
+    path("", include("web.urls"))
 ]

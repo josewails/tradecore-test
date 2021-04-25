@@ -28,3 +28,5 @@ class PostViewSet(viewsets.ModelViewSet):
             return Response(PostSerializer(post).data)
         else:
             return Response(dict(detail=f"Post with id {pk} not found"), status=status.HTTP_404_NOT_FOUND)
+
+

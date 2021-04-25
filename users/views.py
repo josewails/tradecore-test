@@ -21,6 +21,16 @@ class UserSignupView(GenericAPIView):
             return Response(dict(errors=serializer.errors), status=status.HTTP_400_BAD_REQUEST)
 
 
-class UserDetailView(RetrieveAPIView):
-    serializer_class = UserSerializer
-    queryset = User.objects.all()
+class UserDetailView(GenericAPIView):
+
+    def get(self, request, pk=None):
+        if pk:
+            user = User.objects.filter(pk=pk).first()
+
+        else:
+            user = request.user
+
+        if not user:
+            return Response(dict(errors=dict(error=["User not found"])), status=status.HTTP_404_NOT_FOUND)
+
+        return Response(UserSerializer(user).data)

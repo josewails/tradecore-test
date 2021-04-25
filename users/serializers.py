@@ -21,6 +21,11 @@ class UserSignupSerializer(TokenObtainSerializer):
 
     def create(self, validated_data):
         email, password = validated_data["email"], validated_data["password"]
+
+        user = User.objects.filter(email=email).first()
+
+        if user:
+            raise serializers.ValidationError({"errors": {"email": [f"User with email {email} already exists"]}})
         user = User(email=email)
         user.set_password(password)
         user.save()

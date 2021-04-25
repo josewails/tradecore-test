@@ -1,0 +1,8 @@
+{% extends "posts/home.html" %}
+{% block content %}
+    <div class="container">
+        <div class="col-6 offset-3">
+            {% include "posts/login_form.html" with data_url="/users/token" btn_text="Login" %}
+        </div>
+    </div>
+{% endblock %}
