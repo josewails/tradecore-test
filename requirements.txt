@@ -16,6 +16,7 @@ click-didyoumean==0.0.3
 click-plugins==1.1.1
 click-repl==0.1.6
 constantly==15.1.0
+coverage==5.5
 cryptography==3.4.7
 daphne==3.0.2
 Django==3.2

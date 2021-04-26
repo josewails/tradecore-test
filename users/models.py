@@ -52,3 +52,7 @@ class User(AbstractUser):
 
     def __str__(self):
         return self.email
+
+    @property
+    def signed_up_on_holiday(self):
+        return True if self.signup_holiday else False
